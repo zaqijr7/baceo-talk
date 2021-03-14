@@ -8,22 +8,32 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useDispatch} from 'react-redux';
 import http from '../helper/http';
+import {saveDataRegis} from '../redux/action/auth';
 
 function Signup() {
   const [email, setEmail] = useState('');
-  const [phoneNum, setPhoneNum] = useState('');
   const [codeCountry, setCodeCountry] = useState('');
-
+  const [phoneNum, setPhoneNum] = useState('');
+  const [msgRes, setMsgRes] = useState(null);
+  const phoneNumber = `${codeCountry}${phoneNum}`;
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const handlePress = async () => {
-    // try{
-    //   const response = await http()
-    // }catch(err){
-
-    // }
-    navigation.navigate('pin');
+    try {
+      const data = new URLSearchParams();
+      data.append('email', email);
+      data.append('phoneNumber', phoneNumber);
+      const response = await http().post('auth', data);
+      dispatch(saveDataRegis(email, phoneNumber));
+      setMsgRes(response.data.message);
+      navigation.navigate('pin');
+    } catch (err) {
+      setMsgRes(err.response.data.message);
+    }
   };
+  console.log(phoneNumber);
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
@@ -32,6 +42,7 @@ function Signup() {
           Make sure the email and phone number is active
         </Text>
       </View>
+      {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       <TextInput
         placeholder="Write Your Email Here"
         style={style.inputEmail}

@@ -1,4 +1,5 @@
-import React from 'react';
+import {useNavigation} from '@react-navigation/core';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,10 +8,30 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
 import PIN from '../assets/images/pin.png';
+import http from '../helper/http';
 
 function Pin() {
+  const [valOne, setValOne] = useState('');
+  const [valTwo, setValTwo] = useState('');
+  const [valThree, setValThree] = useState('');
+  const [valFour, setValFour] = useState('');
+  const [valFive, setValFive] = useState('');
+  const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
+  const auth = useSelector((state) => state.auth);
+  const navigation = useNavigation();
+
+  const handlePress = async () => {
+    const data = new URLSearchParams();
+    data.append('email', auth.emailRegis);
+    data.append('phoneNum', auth.emailRegis);
+    data.append('email', auth.phoneNumRegis);
+    try {
+      const response = await http().get('auth', data);
+    } catch (err) {}
+  };
+  console.log(pin);
   return (
     <View style={style.parentWrapper}>
       <View style={style.row}>
@@ -18,7 +39,7 @@ function Pin() {
         <Text style={style.textEnterPin}>Enter PIN</Text>
         <Text style={style.text}>
           We've sent an email with pin verification to your email :
-          zaqijr7@gmail.com
+          {auth.emailRegis}
         </Text>
       </View>
       <View style={style.rowInput}>
@@ -26,30 +47,37 @@ function Pin() {
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValOne(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValTwo(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValThree(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFour(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFive(value)}
         />
       </View>
       <View>
-        <TouchableOpacity style={style.buttonSubmit}>
+        <TouchableOpacity
+          style={style.buttonSubmit}
+          onPress={() => handlePress()}>
           <Text style={style.textSubmit}>Submit</Text>
         </TouchableOpacity>
       </View>

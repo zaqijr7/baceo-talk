@@ -6,14 +6,14 @@ import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 import authReducer from './auth';
 import chatReducer from './chatMessage';
 
-const friendConfig = {
-  key: 'friend',
+const authConfig = {
+  key: 'auth',
   storage: AsyncStorage,
   stateReconciler: hardSet,
 };
 
 const reducer = combineReducers({
-  auth: authReducer,
+  auth: persistReducer(authConfig, authReducer),
   friend: friendReducer,
   messageList: chatReducer,
 });
