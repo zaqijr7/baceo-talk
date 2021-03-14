@@ -8,9 +8,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import PIN from '../assets/images/pin.png';
 import http from '../helper/http';
+import {login} from '../redux/action/auth';
 
 function Pin() {
   const [valOne, setValOne] = useState('');
@@ -18,18 +19,25 @@ function Pin() {
   const [valThree, setValThree] = useState('');
   const [valFour, setValFour] = useState('');
   const [valFive, setValFive] = useState('');
+  const [msgRes, setMsgRes] = useState(null);
   const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
   const auth = useSelector((state) => state.auth);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handlePress = async () => {
     const data = new URLSearchParams();
     data.append('email', auth.emailRegis);
-    data.append('phoneNum', auth.emailRegis);
-    data.append('email', auth.phoneNumRegis);
+    data.append('phoneNumber', auth.emailRegis);
+    data.append('pin', pin);
+    console.log(data);
     try {
-      const response = await http().get('auth', data);
-    } catch (err) {}
+      setMsgRes(null);
+      const response = await http().patch('auth', data);
+      dispatch(login(response.data.results.token));
+    } catch (err) {
+      setMsgRes(err.response.data.message);
+    }
   };
   console.log(pin);
   return (
@@ -41,6 +49,7 @@ function Pin() {
           We've sent an email with pin verification to your email :
           {auth.emailRegis}
         </Text>
+        {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
       <View style={style.rowInput}>
         <TextInput
@@ -131,6 +140,12 @@ const style = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#8D0337',
   },
 });
 

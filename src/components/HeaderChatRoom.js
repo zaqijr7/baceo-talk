@@ -1,12 +1,13 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {Profiler} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import TextTicker from 'react-native-text-ticker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
 import avatar from '../assets/images/avatar.jpg';
 
 const HeaderChatRoom = (props) => {
-  const name = useSelector((state) => state.friend.chatFocus);
+  const chatFocus = useSelector((state) => state.friend.chatFocus);
   const navigation = useNavigation();
   return (
     <View style={style.parentWrapper}>
@@ -19,7 +20,15 @@ const HeaderChatRoom = (props) => {
         <Image source={avatar} style={style.avatar} />
       </TouchableOpacity>
       <View style={style.wrapName}>
-        <Text style={style.title}>{name.name}</Text>
+        <TextTicker
+          style={style.title}
+          duration={3000}
+          loop
+          bounce
+          repeatSpacer={50}
+          marqueeDelay={1000}>
+          {chatFocus.name === 'null' ? chatFocus.email : chatFocus.name}
+        </TextTicker>
         <Text style={style.textAvaliable}>Available</Text>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate('profile')}>
@@ -45,6 +54,7 @@ const style = StyleSheet.create({
   iconSearch: {
     fontSize: 22,
     color: 'white',
+    marginLeft: 10,
   },
   title: {
     fontSize: 20,

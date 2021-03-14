@@ -1,3 +1,5 @@
+import jwt_decode from 'jwt-decode';
+import http from '../../helper/http';
 export const saveDataRegis = (email, phoneNum) => {
   return async (dispatch) => {
     dispatch({
@@ -12,5 +14,32 @@ export const saveDataRegis = (email, phoneNum) => {
 };
 
 export const login = (token) => {
-  return async (dispatch) => {};
+  return async (dispatch) => {
+    dispatch({
+      type: 'LOGIN',
+      token: token,
+    });
+    const {id} = jwt_decode(token);
+    try {
+      const response = await http().get(`profile/${id}`);
+      dispatch({
+        type: 'PROFILE',
+        profile: response.data.results,
+      });
+    } catch (err) {
+      dispatch({
+        type: 'SET_MESSAGE',
+        message: err.response.data.message,
+      });
+    }
+  };
+};
+
+export const logout = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'LOGIN',
+      token: null,
+    });
+  };
 };

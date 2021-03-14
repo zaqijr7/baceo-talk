@@ -11,12 +11,17 @@ const authReducer = (state = intialState, action) => {
     case 'LOGIN':
       return {
         ...state,
-        profile: action.payload,
+        token: action.token,
+      };
+    case 'PROFILE':
+      return {
+        ...state,
+        profile: action.profile,
       };
     case 'SET_MESSAGE':
       return {
         ...state,
-        profile: action.payload,
+        profile: action.message,
       };
     case 'SAVE_EMAIL':
       return {

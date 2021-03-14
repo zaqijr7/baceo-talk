@@ -1,6 +1,6 @@
 const initialState = {
   friendList: [],
-  chatFocus: {},
+  chatFocus: [],
 };
 
 const friendReducer = (state = initialState, action) => {

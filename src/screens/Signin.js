@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,37 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useDispatch} from 'react-redux';
+import http from '../helper/http';
+import {login} from '../redux/action/auth';
 
 function Signin() {
+  const [email, setEmail] = useState('');
+  const [codeCountry, setCodeCountry] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [msgRes, setMsgRes] = useState(null);
+  const phoneNumber = `${codeCountry}${phoneNum}`;
+  const [valOne, setValOne] = useState('');
+  const [valTwo, setValTwo] = useState('');
+  const [valThree, setValThree] = useState('');
+  const [valFour, setValFour] = useState('');
+  const [valFive, setValFive] = useState('');
+  const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
   const navigation = useNavigation();
-  const handlePress = () => {
+  const dispatch = useDispatch();
+  const handlePress = async () => {
+    const data = new URLSearchParams();
+    data.append('email', email);
+    data.append('phoneNumber', phoneNumber);
+    data.append('pin', pin);
+    console.log(data);
+    try {
+      setMsgRes(null);
+      const response = await http().patch('auth', data);
+      dispatch(login(response.data.results.token));
+    } catch (err) {
+      setMsgRes(err.response.data.message);
+    }
     navigation.navigate('LandingPage');
   };
   return (
@@ -22,17 +49,26 @@ function Signin() {
           Make sure your account has been registered
         </Text>
       </View>
+      {setMsgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       <TextInput
         placeholder="Write Your Email Here"
         style={style.inputEmail}
         keyboardType="email-address"
+        onChangeText={(value) => setEmail(value)}
       />
       <View style={style.rowInput}>
-        <TextInput defaultValue="+62" style={style.codeCountry} />
+        <TextInput
+          placeholder="62"
+          style={style.codeCountry}
+          maxLength={2}
+          keyboardType="phone-pad"
+          onChangeText={(value) => setCodeCountry(value)}
+        />
         <TextInput
           placeholder="Write Your Phone Number Here"
           style={style.phoneNumber}
-          keyboardType="number-pad"
+          keyboardType="phone-pad"
+          onChangeText={(value) => setPhoneNum(value)}
         />
       </View>
       <View style={style.rowInputPin}>
@@ -41,26 +77,31 @@ function Signin() {
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValOne(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValTwo(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValThree(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFour(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFive(value)}
         />
       </View>
       <View style={style.parentButton}>

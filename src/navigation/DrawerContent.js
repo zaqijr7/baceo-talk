@@ -3,8 +3,16 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import avatar from '../assets/images/avatar.jpg';
+import {useDispatch} from 'react-redux';
+import {logout} from '../redux/action/auth';
+import {DrawerActions} from '@react-navigation/core';
 
 const DrawerContent = (props) => {
+  const dispatch = useDispatch();
+  const handlePress = () => {
+    dispatch(logout());
+    props.navigation.dispatch(DrawerActions.closeDrawer());
+  };
   return (
     <>
       <View style={style.background}>
@@ -43,7 +51,7 @@ const DrawerContent = (props) => {
             <Icon name="sign-out-alt" size={size} color={color} />
           )}
           label="Log Out"
-          onPress={() => props.navigation.navigate('')}
+          onPress={() => handlePress()}
         />
       </View>
     </>

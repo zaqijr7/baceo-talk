@@ -20,7 +20,11 @@ function DrawerNav() {
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       {auth.token === null ? (
         <>
-          <Drawer.Screen name="Auth" component={AuthNavigation} />
+          <Drawer.Screen
+            name="Auth"
+            component={AuthNavigation}
+            options={{swipeEnabled: false}}
+          />
         </>
       ) : (
         <>

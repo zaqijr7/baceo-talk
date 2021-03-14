@@ -4,27 +4,85 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import avatar from '../assets/images/avatar.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/core';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {chatFocus} from '../redux/action/chatFocus';
+import {REACT_APP_API_URL as API_URL} from '@env';
+import moment from 'moment';
 
 function Chatlist(props) {
   const navigation = useNavigation();
+  const profile = useSelector((state) => state.auth.profile);
   const dipatch = useDispatch();
   const handlePress = () => {
-    dipatch(chatFocus({name: props.name, phoneNumber: '085842752523'}));
+    dipatch(
+      chatFocus({
+        peopleId:
+          props.senderId === profile.id_user
+            ? props.receipentId
+            : props.senderId,
+        email:
+          props.senderId === profile.id_user
+            ? props.receipentEmail
+            : props.senderEmail,
+        name:
+          props.senderId === profile.id_user
+            ? props.receipentName
+            : props.senderName,
+        phoneNumber:
+          props.senderId === profile.id_user
+            ? props.receipentPhoneNum
+            : props.senderPhoneNum,
+      }),
+    );
     navigation.navigate('chatRoom', {name: props.name});
   };
   return (
     <TouchableOpacity style={style.parent} onPress={() => handlePress()}>
       <View style={style.rowParrent}>
-        <Image source={avatar} style={style.avatar} />
+        {props.senderId === profile.id_user ? (
+          <>
+            {props.receipentPhoto === `${API_URL}null` ? (
+              <Image source={avatar} style={style.avatar} />
+            ) : (
+              <Image
+                source={{uri: props.receipentPhoto}}
+                style={style.avatar}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {props.senderPhoto === `${API_URL}null` ? (
+              <Image source={avatar} style={style.avatar} />
+            ) : (
+              <Image source={{uri: props.senderPhoto}} style={style.avatar} />
+            )}
+          </>
+        )}
+
         <View style={style.rowContact}>
-          <Text style={style.contactName}>{props.name}</Text>
+          {props.senderId === profile.id_user ? (
+            <Text style={style.contactName}>
+              {props.receipentName === 'null'
+                ? props.receipentEmail
+                : props.receipentName}
+            </Text>
+          ) : (
+            <Text style={style.contactName}>
+              {props.senderName === 'null'
+                ? props.senderEmail
+                : props.senderName}
+            </Text>
+          )}
           <Text>{props.message}</Text>
         </View>
         <View style={style.rowTime}>
-          <Icon name="check" style={style.cheklistIcon} />
-          <Text style={style.timeText}>20:12</Text>
+          {props.senderId === profile.id_user && (
+            <Icon name="check" style={style.cheklistIcon} />
+          )}
+          <Text style={style.timeText}>
+            {moment(props.createdAt).format('LT')}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -64,7 +122,7 @@ const style = StyleSheet.create({
     fontSize: 15,
   },
   contactName: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
   },
 });

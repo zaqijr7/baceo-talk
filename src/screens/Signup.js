@@ -51,8 +51,8 @@ function Signup() {
       />
       <View style={style.rowInput}>
         <TextInput
-          placeholder="+62"
-          maxLength={3}
+          placeholder="62"
+          maxLength={2}
           style={style.codeCountry}
           keyboardType="phone-pad"
           onChangeText={(value) => setCodeCountry(value)}
