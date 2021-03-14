@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     height: 55,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#8D0337',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     paddingHorizontal: 20,
   },
   iconBar: {

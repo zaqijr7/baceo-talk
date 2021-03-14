@@ -9,34 +9,15 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-function Signin() {
-  const navigation = useNavigation();
-  const handlePress = () => {
-    navigation.navigate('LandingPage');
-  };
+function editPin() {
+  const handlePress = () => {};
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
-        <Text style={style.title}>Sign In</Text>
-        <Text style={style.subTitle}>
-          Make sure your account has been registered
-        </Text>
-      </View>
-      <TextInput
-        placeholder="Write Your Email Here"
-        style={style.inputEmail}
-        keyboardType="email-address"
-      />
-      <View style={style.rowInput}>
-        <TextInput defaultValue="+62" style={style.codeCountry} />
-        <TextInput
-          placeholder="Write Your Phone Number Here"
-          style={style.phoneNumber}
-          keyboardType="number-pad"
-        />
+        <Text style={style.title}>Edit Your PIN</Text>
+        <Text style={style.subTitle}>Edit your PIN here</Text>
       </View>
       <View style={style.rowInputPin}>
-        <Text style={style.textPin}>PIN :</Text>
         <TextInput
           maxLength={1}
           style={style.inputPin}
@@ -67,7 +48,7 @@ function Signin() {
         <TouchableOpacity
           style={style.buttonNext}
           onPress={() => handlePress()}>
-          <Icon name="sign-in" style={style.arrowIcon} />
+          <Icon name="save" style={style.arrowIcon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -164,4 +145,4 @@ const style = StyleSheet.create({
     color: '#707478',
   },
 });
-export default Signin;
+export default editPin;

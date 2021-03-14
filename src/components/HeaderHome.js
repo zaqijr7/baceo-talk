@@ -1,11 +1,14 @@
+import {DrawerActions, useNavigation} from '@react-navigation/core';
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const HeaderHome = () => {
+  const navigation = useNavigation();
   return (
     <View style={style.parentWrapper}>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
         <Icon name="bars" style={style.iconBar} />
       </TouchableOpacity>
       <Text style={style.title}>Baceo Talk</Text>

@@ -14,7 +14,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ChatRoom = (props) => {
-  console.log(props.route.params.name);
   const messageList = useSelector((state) => state.messageList.messageList);
   return (
     <View style={style.parentWrap}>

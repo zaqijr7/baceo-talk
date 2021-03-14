@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,20 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import http from '../helper/http';
 
 function Signup() {
+  const [email, setEmail] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [codeCountry, setCodeCountry] = useState('');
+
   const navigation = useNavigation();
-  const handlePress = () => {
+  const handlePress = async () => {
+    // try{
+    //   const response = await http()
+    // }catch(err){
+
+    // }
     navigation.navigate('pin');
   };
   return (
@@ -26,13 +36,21 @@ function Signup() {
         placeholder="Write Your Email Here"
         style={style.inputEmail}
         keyboardType="email-address"
+        onChangeText={(value) => setEmail(value)}
       />
       <View style={style.rowInput}>
-        <TextInput defaultValue="+62" style={style.codeCountry} />
+        <TextInput
+          placeholder="+62"
+          maxLength={3}
+          style={style.codeCountry}
+          keyboardType="phone-pad"
+          onChangeText={(value) => setCodeCountry(value)}
+        />
         <TextInput
           placeholder="Write Your Phone Number Here"
           style={style.phoneNumber}
           keyboardType="number-pad"
+          onChangeText={(value) => setPhoneNum(value)}
         />
       </View>
       <TouchableOpacity

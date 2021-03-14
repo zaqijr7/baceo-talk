@@ -1,15 +1,17 @@
 const intialState = {
-  profile: {
-    id: 10,
-    name: 'Muhammad Zaqi',
-    phoneNumber: '085842752523',
-  },
+  token: null,
+  profile: [],
   authMessage: '',
 };
 
 const authReducer = (state = intialState, action) => {
   switch (action.type) {
     case 'LOGIN':
+      return {
+        ...state,
+        profile: action.payload,
+      };
+    case 'SET_MESSAGE':
       return {
         ...state,
         profile: action.payload,
