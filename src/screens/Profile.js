@@ -12,17 +12,39 @@ import {
 import HeaderSelfProfile from '../components/HeaderSelfProfile';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/core';
-
+import TextTicker from 'react-native-text-ticker';
 import avatar from '../assets/images/foto.png';
+import {useSelector} from 'react-redux';
 
 function Profile() {
+  const profile = useSelector((state) => state.auth.profile);
   const navigation = useNavigation();
   return (
     <>
       <ImageBackground source={avatar} style={style.photo}>
         <HeaderSelfProfile />
         <View style={style.rowName}>
-          <Text style={style.textNameSelf}>Muhammad Zaqi</Text>
+          {profile.name === 'null' ? (
+            <TextTicker
+              style={style.title}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              <Text style={style.textNameSelf}>{profile.email}</Text>
+            </TextTicker>
+          ) : (
+            <TextTicker
+              style={style.title}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              <Text style={style.textNameSelf}>{profile.name}</Text>
+            </TextTicker>
+          )}
           <Text style={{color: 'white'}}>Online</Text>
         </View>
       </ImageBackground>
@@ -39,7 +61,7 @@ function Profile() {
             <Text style={style.textInfo}>Account</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('editPhoneNum')}>
-              <Text style={style.textPhoneNumber}>+6285842752523</Text>
+              <Text style={style.textPhoneNumber}>+{profile.phoneNumber}</Text>
               <Text style={style.textMobile}>Tap to change phone number</Text>
             </TouchableOpacity>
           </View>
@@ -47,7 +69,7 @@ function Profile() {
           <TouchableOpacity
             style={style.rowInfoPhoneNumber}
             onPress={() => navigation.navigate('editEmail')}>
-            <Text style={style.textPhoneNumber}>zaqijr7@gmail.com</Text>
+            <Text style={style.textPhoneNumber}>{profile.email}</Text>
             <Text style={style.textMobile}>Email</Text>
           </TouchableOpacity>
           <View style={style.line} />
@@ -55,7 +77,11 @@ function Profile() {
             style={style.rowInfoPhoneNumber}
             onPress={() => navigation.navigate('editName')}>
             <Text style={style.textPhoneNumber}>Name</Text>
-            <Text style={style.textMobile}>Muhammad Zaqi</Text>
+            <Text style={style.textMobile}>
+              {profile.name === 'null'
+                ? "You haven't updated the name yet"
+                : profile.name}
+            </Text>
           </TouchableOpacity>
           <View style={style.line} />
           <TouchableOpacity

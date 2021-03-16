@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -12,18 +12,37 @@ import BubbleChat from '../components/BubbleChat';
 import background from '../assets/images/chat.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import http from '../helper/http';
+import {useState} from 'react/cjs/react.development';
 
 const ChatRoom = (props) => {
-  const messageList = useSelector((state) => state.messageList.messageList);
+  const [listChat, setListChat] = useState([]);
+  const auth = useSelector((state) => state.auth);
+  const chatFocus = useSelector((state) => state.friend.chatFocus);
+  console.log(chatFocus.peopleId, 'ini id orang');
+  const getDataChat = async () => {
+    const response = await http(auth.token).get(`chat/${chatFocus.peopleId}`);
+    setListChat(response.data.result);
+  };
+  useEffect(() => {
+    getDataChat();
+    return () => {
+      setListChat([]);
+    };
+  }, [chatFocus]);
   return (
     <View style={style.parentWrap}>
       <ImageBackground source={background} style={style.image}>
         <View style={style.wrapperMessageList}>
           <FlatList
-            data={messageList}
+            data={listChat}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item}) => (
-              <BubbleChat message={item.message} idUser={item.senderId} />
+              <BubbleChat
+                message={item.message}
+                idUser={item.senderId}
+                idChat={item.id_chat}
+              />
             )}
           />
         </View>

@@ -3,11 +3,14 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import avatar from '../assets/images/avatar.jpg';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../redux/action/auth';
 import {DrawerActions} from '@react-navigation/core';
+import TextTicker from 'react-native-text-ticker';
+import {REACT_APP_API_URL as API_URL} from '@env';
 
 const DrawerContent = (props) => {
+  const profile = useSelector((state) => state.auth.profile);
   const dispatch = useDispatch();
   const handlePress = () => {
     dispatch(logout());
@@ -16,10 +19,36 @@ const DrawerContent = (props) => {
   return (
     <>
       <View style={style.background}>
-        <Image source={avatar} style={style.imageProfile} />
+        {profile.photo === `${API_URL}null` ? (
+          <Image source={avatar} style={style.imageProfile} />
+        ) : (
+          <Image source={avatar} style={style.imageProfile} />
+        )}
         <View>
-          <Text style={style.textName}>Muhammad Zaqi</Text>
-          <Text style={style.textPhoneNumber}>085842752523</Text>
+          <View style={style.rowName}>
+            {profile.name === 'null' ? (
+              <TextTicker
+                style={style.textName}
+                duration={3000}
+                loop
+                bounce
+                repeatSpacer={50}
+                marqueeDelay={1000}>
+                {profile.email}
+              </TextTicker>
+            ) : (
+              <TextTicker
+                style={style.textName}
+                duration={3000}
+                loop
+                bounce
+                repeatSpacer={50}
+                marqueeDelay={1000}>
+                {profile.name}
+              </TextTicker>
+            )}
+            <Text style={style.textPhoneNumber}>085842752523</Text>
+          </View>
         </View>
       </View>
       <DrawerContentScrollView style={{paddingTop: 0}}>

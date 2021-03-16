@@ -12,6 +12,8 @@ import {useSelector} from 'react-redux';
 import avatar from '../assets/images/avatar.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/core';
+import {REACT_APP_API_URL as API_URL} from '@env';
+import TextTicker from 'react-native-text-ticker';
 
 const ProfilePeople = () => {
   const profile = useSelector((state) => state.friend.chatFocus);
@@ -21,9 +23,34 @@ const ProfilePeople = () => {
   return (
     <>
       <View style={style.row1}>
-        <Image source={avatar} style={style.avatar} />
-        <View>
-          <Text style={style.textName}>{profile.name}</Text>
+        {profile.photo === `${API_URL}null` ? (
+          <Image source={avatar} style={style.avatar} />
+        ) : (
+          <Image source={{uri: profile.photo}} style={style.avatar} />
+        )}
+        <View style={style.rowName}>
+          {profile.name === 'null' ? (
+            <TextTicker
+              style={style.title}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              <Text style={style.textName}>{profile.email}</Text>
+            </TextTicker>
+          ) : (
+            <TextTicker
+              style={style.title}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              <Text style={style.textName}>{profile.name}</Text>
+            </TextTicker>
+          )}
+
           <Text style={style.textLastSeen}>Last seen yesterday 23:16</Text>
         </View>
       </View>
@@ -76,6 +103,9 @@ const style = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: 'white',
     position: 'relative',
+  },
+  rowName: {
+    flex: 1,
   },
   btnChat: {
     height: 75,

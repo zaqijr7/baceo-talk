@@ -32,6 +32,10 @@ function Chatlist(props) {
           props.senderId === profile.id_user
             ? props.receipentPhoneNum
             : props.senderPhoneNum,
+        photo:
+          props.senderId === profile.id_user
+            ? props.receipentPhoto
+            : props.senderPhoto,
       }),
     );
     navigation.navigate('chatRoom', {name: props.name});

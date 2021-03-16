@@ -8,7 +8,7 @@ const BubbleChat = (props) => {
   console.log(props.idUser);
   return (
     <>
-      {profile.id === props.idUser ? (
+      {profile.id_user === props.idUser ? (
         <TouchableOpacity>
           <View style={style.parentRootSelf}>
             <View style={style.parentWrap}>

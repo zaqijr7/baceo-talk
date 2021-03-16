@@ -5,6 +5,7 @@ import TextTicker from 'react-native-text-ticker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
 import avatar from '../assets/images/avatar.jpg';
+import {REACT_APP_API_URL as API_URL} from '@env';
 
 const HeaderChatRoom = (props) => {
   const chatFocus = useSelector((state) => state.friend.chatFocus);
@@ -17,7 +18,11 @@ const HeaderChatRoom = (props) => {
       <TouchableOpacity
         style={style.photoProfil}
         onPress={() => navigation.navigate('profile')}>
-        <Image source={avatar} style={style.avatar} />
+        {chatFocus.photo === `${API_URL}null` ? (
+          <Image source={avatar} style={style.avatar} />
+        ) : (
+          <Image source={{uri: chatFocus.photo}} style={style.avatar} />
+        )}
       </TouchableOpacity>
       <View style={style.wrapName}>
         <TextTicker
