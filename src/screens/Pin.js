@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/core';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -22,7 +21,6 @@ function Pin() {
   const [msgRes, setMsgRes] = useState(null);
   const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
   const auth = useSelector((state) => state.auth);
-  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const handlePress = async () => {

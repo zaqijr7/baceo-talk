@@ -1,23 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {useSelector} from 'react-redux';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect} from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import Chatlist from '../components/Chatlist';
 import http from '../helper/http';
+import {
+  historyInteraction,
+  msgResponse,
+} from '../redux/action/interactionHistory';
 
 const separator = () => {
   return <View style={style.separator} />;
 };
 
 function Home() {
-  const [data, setData] = useState([]);
+  const data = useSelector((state) => state.messageList.interaction);
+  const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const [msg, setMsg] = useState('');
   const getHistoyInteraction = async () => {
     try {
       const response = await http(auth.token).get('history');
-      setData(response.data.results);
+      dispatch(historyInteraction(response.data.results));
     } catch (err) {
-      setMsg('please wait');
+      dispatch(msgResponse(err.response.data.message));
     }
   };
 

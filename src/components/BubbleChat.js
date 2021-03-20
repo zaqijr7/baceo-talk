@@ -5,7 +5,6 @@ import {useSelector} from 'react-redux';
 
 const BubbleChat = (props) => {
   const profile = useSelector((state) => state.auth.profile);
-  console.log(props.idUser);
   return (
     <>
       {profile.id_user === props.idUser ? (

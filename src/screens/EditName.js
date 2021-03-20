@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,19 +8,38 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useDispatch, useSelector} from 'react-redux';
+import http from '../helper/http';
+import {updateProfile} from '../redux/action/auth';
 
 function editName() {
-  const handlePress = () => {};
+  const [name, setName] = useState('');
+  const dispatch = useDispatch();
+  const [msgRes, setMsgRes] = useState(null);
+  const token = useSelector((state) => state.auth.token);
+
+  const handlePress = async () => {
+    const data = new URLSearchParams();
+    data.append('name', name);
+    const response = await http(token).patch('profile', data);
+    dispatch(updateProfile(response.data.results));
+    setMsgRes(response.data.message);
+    setTimeout(() => {
+      setMsgRes(null);
+    }, 1500);
+  };
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
         <Text style={style.title}>Edit Your Name</Text>
         <Text style={style.subTitle}>Edit your Name here</Text>
+        {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
       <TextInput
         placeholder="Write Your Name Here"
         style={style.inputEmail}
         keyboardType="email-address"
+        onChangeText={(value) => setName(value)}
       />
       <View style={style.parentButton}>
         <TouchableOpacity

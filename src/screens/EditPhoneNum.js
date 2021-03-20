@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,21 +8,49 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useDispatch, useSelector} from 'react-redux';
+import http from '../helper/http';
+import {updateProfile} from '../redux/action/auth';
 
 function editPhoneNum() {
-  const handlePress = () => {};
+  const [codeCountry, setCodeCountry] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [msgRes, setMsgRes] = useState(null);
+  const phoneNumber = `${codeCountry}${phoneNum}`;
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+
+  const handlePress = async () => {
+    const data = new URLSearchParams();
+    data.append('phoneNumber', phoneNumber);
+    const response = await http(token).patch('profile', data);
+    dispatch(updateProfile(response.data.results));
+    setMsgRes(response.data.message);
+    setTimeout(() => {
+      setMsgRes(null);
+    }, 1500);
+  };
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
         <Text style={style.title}>Edit Phone Number</Text>
         <Text style={style.subTitle}>Edit your phone number here</Text>
+        {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
       <View style={style.rowInput}>
-        <TextInput defaultValue="+62" style={style.codeCountry} />
+        <TextInput
+          placeholder="62"
+          maxLength={2}
+          keyboardType="phone-pad"
+          style={style.codeCountry}
+          onChangeText={(value) => setCodeCountry(value)}
+        />
         <TextInput
           placeholder="Write Your Phone Number Here"
           style={style.phoneNumber}
-          keyboardType="number-pad"
+          keyboardType="phone-pad"
+          maxLength={13}
+          onChangeText={(value) => setPhoneNum(value)}
         />
       </View>
       <View style={style.parentButton}>

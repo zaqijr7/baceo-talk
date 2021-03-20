@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -8,20 +8,141 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
 } from 'react-native';
+import {REACT_APP_API_URL as API_URL} from '@env';
 import HeaderSelfProfile from '../components/HeaderSelfProfile';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/core';
 import TextTicker from 'react-native-text-ticker';
-import avatar from '../assets/images/foto.png';
-import {useSelector} from 'react-redux';
+import avatar from '../assets/images/avatar.jpg';
+import {useDispatch, useSelector} from 'react-redux';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import http from '../helper/http';
+import {updateProfile} from '../redux/action/auth';
 
 function Profile() {
   const profile = useSelector((state) => state.auth.profile);
+  const [showModal, setShowModal] = useState(false);
+  const [msgRes, setMsgRes] = useState(null);
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+
+  const choosePhotto = () => {
+    setShowModal(!showModal);
+  };
+
+  const openGallery = () => {
+    const options = {mediaType: 'photo'};
+    launchImageLibrary(options, async (response) => {
+      if (response.fileSize > 2000000) {
+        setMsgRes('the file is too large');
+        setTimeout(() => {
+          setMsgRes(null);
+        }, 1000);
+      } else {
+        await uploadPhoto(response);
+      }
+    });
+  };
+
+  const openCamera = () => {
+    const options = {mediaType: 'photo'};
+    launchCamera(options, async (response) => {
+      if (response.fileSize > 2000000) {
+        setMsgRes('the file is too large');
+        setTimeout(() => {
+          setMsgRes(null);
+        }, 1000);
+      } else {
+        await uploadPhoto(response);
+      }
+    });
+  };
+
+  const uploadPhoto = async (image) => {
+    console.log(image, 'ini image dari kamera');
+    const fileUpload = {
+      uri: image.uri,
+      type: 'image/jpeg',
+      name: image.fileName,
+    };
+    const file = new FormData();
+    file.append('photo', fileUpload);
+    const response = await http(token).put('profile', file);
+    dispatch(updateProfile(response.data.results));
+    setMsgRes(response.data.message);
+    setTimeout(() => {
+      setMsgRes(null);
+    }, 2000);
+  };
+
+  const deletePhoto = async () => {
+    const response = await http(token).delete('profile');
+    dispatch(updateProfile(response.data.results));
+    setMsgRes(response.data.message);
+    setTimeout(() => {
+      setMsgRes(null);
+    }, 2000);
+  };
+
   const navigation = useNavigation();
   return (
     <>
-      <ImageBackground source={avatar} style={style.photo}>
+      <Modal
+        transparent={true}
+        visible={showModal}
+        style={{flex: 1}}
+        animationType="fade">
+        <View style={style.parentModal}>
+          <View style={style.bodyModal}>
+            {msgRes !== null ? (
+              <>
+                <Text style={style.textInfo}>{msgRes.toUpperCase()}</Text>
+                <View style={style.rowBtnClose}>
+                  <TouchableOpacity
+                    style={style.btnClose}
+                    onPress={() => setShowModal(false)}>
+                    <Text style={style.textBtn}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <View>
+                  <TouchableOpacity
+                    onPress={() => openGallery()}
+                    style={style.btnChooseImage}>
+                    <Text style={style.textBtn}>Open Gallery</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => openCamera()}
+                    style={style.btnChooseImage}>
+                    <Text style={style.textBtn}>Open Camera</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={style.rowBtnClose}>
+                  <TouchableOpacity
+                    style={style.btnDelete}
+                    onPress={() => deletePhoto()}>
+                    <Icon name="trash" style={style.iconTrash} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={style.btnClose}
+                    onPress={() => setShowModal(false)}>
+                    <Text style={style.textBtn}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+      <ImageBackground
+        source={
+          profile.photo === `${API_URL}null` ? avatar : {uri: profile.photo}
+        }
+        style={style.photo}>
         <HeaderSelfProfile />
         <View style={style.rowName}>
           {profile.name === 'null' ? (
@@ -51,7 +172,8 @@ function Profile() {
       <View>
         <Pressable
           style={style.btnChat}
-          android_ripple={{color: 'black', radius: 37.5}}>
+          android_ripple={{color: 'black', radius: 37.5}}
+          onPress={() => choosePhotto()}>
           <Icon name="camera" style={style.iconChat} />
         </Pressable>
       </View>
@@ -188,6 +310,61 @@ const style = StyleSheet.create({
   },
   rowTextNotification: {
     flex: 1,
+  },
+  parentModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // position: 'absolute',
+  },
+  bodyModal: {
+    backgroundColor: 'white',
+    height: 270,
+    width: 270,
+    borderRadius: 15,
+    padding: 20,
+  },
+  btnChooseImage: {
+    width: '100%',
+    backgroundColor: '#BA275E',
+    height: 56,
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  textBtn: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  rowBtnClose: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+  },
+  btnClose: {
+    height: 40,
+    width: 100,
+    borderRadius: 10,
+    backgroundColor: '#ba0900',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnDelete: {
+    height: 40,
+    width: 40,
+    borderRadius: 10,
+    backgroundColor: '#ba0900',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  iconTrash: {
+    fontSize: 18,
+    color: 'white',
   },
 });
 

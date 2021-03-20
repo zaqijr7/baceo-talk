@@ -11,10 +11,15 @@ const authConfig = {
   storage: AsyncStorage,
   stateReconciler: hardSet,
 };
+const friendConfig = {
+  key: 'friend',
+  storage: AsyncStorage,
+  stateReconciler: hardSet,
+};
 
 const reducer = combineReducers({
   auth: persistReducer(authConfig, authReducer),
-  friend: friendReducer,
+  friend: persistReducer(friendConfig, friendReducer),
   messageList: chatReducer,
 });
 

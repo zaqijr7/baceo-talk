@@ -6,6 +6,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import persistedStore from './src/redux/store';
 import DrawerNav from './src/navigation/DrawerNavigator';
+import SocketRoot from './src/components/SocketRoot';
 
 function App() {
   const {persistore, store} = persistedStore();
@@ -17,7 +18,9 @@ function App() {
       <PersistGate persistor={persistore}>
         <Provider store={store}>
           <NavigationContainer>
-            <DrawerNav />
+            <SocketRoot>
+              <DrawerNav />
+            </SocketRoot>
           </NavigationContainer>
         </Provider>
       </PersistGate>

@@ -11,8 +11,11 @@ import editEmail from '../screens/EditEmail';
 import editName from '../screens/EditName';
 import editPin from '../screens/EditPin';
 import {useSelector} from 'react-redux';
+import Contact from '../screens/Contact';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 function DrawerNav() {
   const auth = useSelector((state) => state.auth);
@@ -48,6 +51,20 @@ function DrawerNav() {
             component={Profile}
             options={{
               headerShown: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="Contact"
+            component={Contact}
+            options={{
+              headerShown: true,
+              headerTitle: 'Contact',
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#8D0337',
+                elevation: 4,
+              },
             }}
           />
 

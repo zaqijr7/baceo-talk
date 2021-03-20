@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,40 +9,69 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {updateProfile} from '../redux/action/auth';
+import http from '../helper/http';
+import {useDispatch, useSelector} from 'react-redux';
 
 function editPin() {
-  const handlePress = () => {};
+  const [valOne, setValOne] = useState('');
+  const [valTwo, setValTwo] = useState('');
+  const [valThree, setValThree] = useState('');
+  const [valFour, setValFour] = useState('');
+  const [valFive, setValFive] = useState('');
+  const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
+  const dispatch = useDispatch();
+  const [msgRes, setMsgRes] = useState(null);
+  const token = useSelector((state) => state.auth.token);
+
+  const handlePress = async () => {
+    const data = new URLSearchParams();
+    data.append('pin', pin);
+    const response = await http(token).patch('profile', data);
+    dispatch(updateProfile(response.data.results));
+    setMsgRes(response.data.message);
+    setTimeout(() => {
+      setMsgRes(null);
+    }, 1500);
+  };
+
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
         <Text style={style.title}>Edit Your PIN</Text>
         <Text style={style.subTitle}>Edit your PIN here</Text>
+        {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
       <View style={style.rowInputPin}>
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValOne(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValTwo(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValThree(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFour(value)}
         />
         <TextInput
           maxLength={1}
           style={style.inputPin}
           keyboardType="number-pad"
+          onChangeText={(value) => setValFive(value)}
         />
       </View>
       <View style={style.parentButton}>

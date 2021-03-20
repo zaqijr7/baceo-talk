@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import avatar from '../assets/images/avatar.jpg';
@@ -19,11 +19,14 @@ const DrawerContent = (props) => {
   return (
     <>
       <View style={style.background}>
-        {profile.photo === `${API_URL}null` ? (
-          <Image source={avatar} style={style.imageProfile} />
-        ) : (
-          <Image source={avatar} style={style.imageProfile} />
-        )}
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('selfProfile')}>
+          {profile.photo === `${API_URL}null` ? (
+            <Image source={avatar} style={style.imageProfile} />
+          ) : (
+            <Image source={{uri: profile.photo}} style={style.imageProfile} />
+          )}
+        </TouchableOpacity>
         <View>
           <View style={style.rowName}>
             {profile.name === 'null' ? (
@@ -71,7 +74,7 @@ const DrawerContent = (props) => {
             <Icon name="address-book" size={size} color={color} />
           )}
           label="Contact"
-          onPress={() => props.navigation.navigate('selfProfile')}
+          onPress={() => props.navigation.navigate('Contact')}
         />
       </DrawerContentScrollView>
       <View style={style.rowSignOut}>

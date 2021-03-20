@@ -35,6 +35,15 @@ export const login = (token) => {
   };
 };
 
+export const updateProfile = (data) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'UPDATE_PROFILE',
+      payload: data,
+    });
+  };
+};
+
 export const logout = () => {
   return async (dispatch) => {
     dispatch({

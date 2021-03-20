@@ -18,6 +18,11 @@ const authReducer = (state = intialState, action) => {
         ...state,
         profile: action.profile,
       };
+    case 'UPDATE_PROFILE':
+      return {
+        ...state,
+        profile: action.payload,
+      };
     case 'SET_MESSAGE':
       return {
         ...state,
