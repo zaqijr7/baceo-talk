@@ -1,25 +1,14 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  Image,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, Image, View, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import PIN from '../assets/images/pin.png';
 import http from '../helper/http';
 import {login} from '../redux/action/auth';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 function Pin() {
-  const [valOne, setValOne] = useState('');
-  const [valTwo, setValTwo] = useState('');
-  const [valThree, setValThree] = useState('');
-  const [valFour, setValFour] = useState('');
-  const [valFive, setValFive] = useState('');
+  const [password, setPassword] = useState('');
   const [msgRes, setMsgRes] = useState(null);
-  const pin = `${valOne}${valTwo}${valThree}${valFour}${valFive}`;
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -27,7 +16,7 @@ function Pin() {
     const data = new URLSearchParams();
     data.append('email', auth.emailRegis);
     data.append('phoneNumber', auth.emailRegis);
-    data.append('pin', pin);
+    data.append('pin', password);
     console.log(data);
     try {
       setMsgRes(null);
@@ -37,7 +26,6 @@ function Pin() {
       setMsgRes(err.response.data.message);
     }
   };
-  console.log(pin);
   return (
     <View style={style.parentWrapper}>
       <View style={style.row}>
@@ -50,35 +38,15 @@ function Pin() {
         {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
       <View style={style.rowInput}>
-        <TextInput
-          maxLength={1}
-          style={style.inputPin}
-          keyboardType="number-pad"
-          onChangeText={(value) => setValOne(value)}
-        />
-        <TextInput
-          maxLength={1}
-          style={style.inputPin}
-          keyboardType="number-pad"
-          onChangeText={(value) => setValTwo(value)}
-        />
-        <TextInput
-          maxLength={1}
-          style={style.inputPin}
-          keyboardType="number-pad"
-          onChangeText={(value) => setValThree(value)}
-        />
-        <TextInput
-          maxLength={1}
-          style={style.inputPin}
-          keyboardType="number-pad"
-          onChangeText={(value) => setValFour(value)}
-        />
-        <TextInput
-          maxLength={1}
-          style={style.inputPin}
-          keyboardType="number-pad"
-          onChangeText={(value) => setValFive(value)}
+        <SmoothPinCodeInput
+          password
+          mask="﹡"
+          cellSize={50}
+          cellStyle={style.cellStyle}
+          cellStyleFocused={style.cellStyleFocused}
+          codeLength={5}
+          value={password}
+          onTextChange={(value) => setPassword(value)}
         />
       </View>
       <View>
@@ -124,6 +92,13 @@ const style = StyleSheet.create({
     marginHorizontal: 5,
     borderBottomColor: '#8D0337',
     textAlign: 'center',
+  },
+  cellStyle: {
+    borderBottomWidth: 2,
+    borderColor: '#8D0337',
+  },
+  cellStyleFocused: {
+    borderColor: 'black',
   },
   buttonSubmit: {
     height: 45,

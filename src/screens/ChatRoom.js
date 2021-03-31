@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
+  Pressable,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {historyMsg, pageInfoHistoryMessage} from '../redux/action/msgHistory';
@@ -55,6 +56,7 @@ const ChatRoom = (props) => {
       );
       await getDataChat();
       await getHistoyInteraction();
+      setMessage('');
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +68,6 @@ const ChatRoom = (props) => {
       const oldData = listChat;
       const response = await http(auth.token).get(`${pageInfo.nextLink}`);
       const resultResponse = response.data.result;
-      console.log(resultResponse, '<< ini datanya');
       dispatch(pageInfoHistoryMessage(response.data.pageInfo));
       const newData = [...oldData, ...resultResponse];
       dispatch(historyMsg(newData));
@@ -81,7 +82,6 @@ const ChatRoom = (props) => {
     try {
       const response = await http(auth.token).get(`${pageInfo.nextLink}`);
       const resultResponse = response.data.result;
-      console.log(resultResponse, '<< ini datanya');
       dispatch(pageInfoHistoryMessage(response.data.pageInfo));
       const newData = [...oldData, ...resultResponse];
       dispatch(historyMsg(newData));
@@ -118,7 +118,7 @@ const ChatRoom = (props) => {
             onEndReached={nextData}
             onEndReachedThreshold={1}
             ListFooterComponent={
-              <LoadMore load={listRefresh} nextData={pageInfo} />
+              <LoadMore load={listRefresh} nextData={pageInfo.nextLink} />
             }
           />
         </View>
@@ -128,11 +128,14 @@ const ChatRoom = (props) => {
             placeholder="Message..."
             multiline={true}
             style={style.TextInput}
+            value={message}
             onChangeText={(value) => setMessage(value)}
           />
-          <TouchableOpacity onPress={() => sendChat()}>
+          <Pressable
+            android_ripple={{radius: 30, borderless: true, color: 'black'}}
+            onPress={() => sendChat()}>
             <Icon name="paper-plane" style={style.iconPlane} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </ImageBackground>
     </View>

@@ -11,29 +11,44 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch} from 'react-redux';
 import http from '../helper/http';
 import {saveDataRegis} from '../redux/action/auth';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 
 function Signup() {
-  const [email, setEmail] = useState('');
-  const [codeCountry, setCodeCountry] = useState('');
-  const [phoneNum, setPhoneNum] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [codeCountry, setCodeCountry] = useState('');
+  // const [phoneNum, setPhoneNum] = useState('');
   const [msgRes, setMsgRes] = useState(null);
-  const phoneNumber = `${codeCountry}${phoneNum}`;
+  // const phoneNumber = `${codeCountry}${phoneNum}`;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const handlePress = async () => {
+  const handlePress = async (value) => {
+    const phoneNumber = `${value.codeCountry}${value.phoneNum}`;
     try {
       const data = new URLSearchParams();
-      data.append('email', email);
+      data.append('email', value.email);
       data.append('phoneNumber', phoneNumber);
       const response = await http().post('auth', data);
-      dispatch(saveDataRegis(email, phoneNumber));
+      dispatch(saveDataRegis(value.email, phoneNumber));
       setMsgRes(response.data.message);
       navigation.navigate('pin');
     } catch (err) {
       setMsgRes(err.response.data.message);
     }
   };
-  console.log(phoneNumber);
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid Email').required('Email required !'),
+    codeCountry: Yup.number()
+      .typeError('Form must be a number')
+      .min(2, 'Country code must be two characters')
+      .required('Country code required !'),
+    phoneNum: Yup.number()
+      .integer('Form must be a number')
+      .typeError('Form must be a number')
+      .required('Phone Number required !'),
+  });
+
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
@@ -43,41 +58,85 @@ function Signup() {
         </Text>
       </View>
       {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
-      <TextInput
-        placeholder="Write Your Email Here"
-        style={style.inputEmail}
-        keyboardType="email-address"
-        onChangeText={(value) => setEmail(value)}
-      />
-      <View style={style.rowInput}>
-        <TextInput
-          placeholder="62"
-          maxLength={2}
-          style={style.codeCountry}
-          keyboardType="phone-pad"
-          onChangeText={(value) => setCodeCountry(value)}
-        />
-        <TextInput
-          placeholder="Write Your Phone Number Here"
-          style={style.phoneNumber}
-          keyboardType="number-pad"
-          onChangeText={(value) => setPhoneNum(value)}
-        />
-      </View>
-      <TouchableOpacity
-        style={style.textLogin}
-        onPress={() => navigation.navigate('signin')}>
-        <Text>
-          Do you have account? <Text style={style.login}>Login</Text>
-        </Text>
-      </TouchableOpacity>
-      <View style={style.parentButton}>
-        <TouchableOpacity
-          style={style.buttonNext}
-          onPress={() => handlePress()}>
-          <Icon name="arrow-right" style={style.arrowIcon} />
-        </TouchableOpacity>
-      </View>
+      <Formik
+        initialValues={{email: '', codeCountry: '', phoneNum: ''}}
+        onSubmit={(values) => {
+          handlePress(values);
+        }}
+        validationSchema={validationSchema}>
+        {({
+          handleChange,
+          errors,
+          touched,
+          handleSubmit,
+          handleBlur,
+          isValid,
+          values,
+        }) => (
+          <>
+            <TextInput
+              placeholder="Write Your Email Here"
+              style={style.inputEmail}
+              keyboardType="email-address"
+              autoCompleteType="email"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+            />
+            {errors.email && touched.email ? (
+              <Text style={style.textDanger}>{errors.email}</Text>
+            ) : null}
+            <View style={style.rowInput}>
+              <TextInput
+                placeholder="62"
+                maxLength={2}
+                style={style.codeCountry}
+                keyboardType="phone-pad"
+                onChangeText={handleChange('codeCountry')}
+                onBlur={handleBlur('codeCountry')}
+              />
+              <TextInput
+                placeholder="Write Your Phone Number Here"
+                style={style.phoneNumber}
+                keyboardType="phone-pad"
+                onChangeText={handleChange('phoneNum')}
+                onBlur={handleBlur('phoneNum')}
+              />
+            </View>
+            {(errors.phoneNum && touched.phoneNum) ||
+            (errors.codeCountry && touched.codeCountry) ? (
+              <Text style={style.textDanger}>
+                {errors.phoneNum || errors.codeCountry}
+              </Text>
+            ) : null}
+            <TouchableOpacity
+              style={style.textLogin}
+              onPress={() => navigation.navigate('signin')}>
+              <Text>
+                Do you have account? <Text style={style.login}>Login</Text>
+              </Text>
+            </TouchableOpacity>
+            <View style={style.parentButton}>
+              {isValid === false ||
+              values.email === '' ||
+              values.codeCountry === '' ||
+              values.phoneNum === '' ? (
+                <TouchableOpacity
+                  style={style.buttonNextDisable}
+                  onPress={handleSubmit}
+                  disabled>
+                  <Icon name="arrow-right" style={style.arrowIcon} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.buttonNext}
+                  onPress={handleSubmit}>
+                  <Icon name="arrow-right" style={style.arrowIcon} />
+                </TouchableOpacity>
+              )}
+            </View>
+          </>
+        )}
+      </Formik>
     </View>
   );
 }
@@ -94,6 +153,9 @@ const style = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#8D0337',
     marginVertical: 10,
+  },
+  textDanger: {
+    color: 'red',
   },
   codeCountry: {
     width: 40,
@@ -134,6 +196,16 @@ const style = StyleSheet.create({
   },
   buttonNext: {
     backgroundColor: '#8D0337',
+    width: 70,
+    height: 70,
+    borderRadius: 100,
+    marginBottom: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 1,
+  },
+  buttonNextDisable: {
+    backgroundColor: 'gray',
     width: 70,
     height: 70,
     borderRadius: 100,

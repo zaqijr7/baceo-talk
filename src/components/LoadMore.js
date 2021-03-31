@@ -3,11 +3,9 @@ import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 function LoadMore(props) {
-  const pageInfo = useSelector((state) => state.messageList.pageInfoHistoryMsg);
-
   return (
     <>
-      {pageInfo !== null ? (
+      {props.nextData !== null ? (
         <View style={style.row}>
           <ActivityIndicator size="large" color="black" />
         </View>

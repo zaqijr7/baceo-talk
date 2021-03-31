@@ -6,15 +6,25 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {chatFocus} from '../redux/action/chatFocus';
+import {historyMsg, pageInfoHistoryMessage} from '../redux/action/msgHistory';
 import {REACT_APP_API_URL as API_URL} from '@env';
 import moment from 'moment';
+import http from '../helper/http';
 
 function Chatlist(props) {
   const navigation = useNavigation();
   const profile = useSelector((state) => state.auth.profile);
-  const dipatch = useDispatch();
-  const handlePress = () => {
-    dipatch(
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const handlePress = async () => {
+    const response = await http(auth.token).get(
+      `chat/${
+        props.senderId === profile.id_user ? props.receipentId : props.senderId
+      }`,
+    );
+    dispatch(historyMsg(response.data.result));
+    dispatch(pageInfoHistoryMessage(response.data.pageInfo));
+    dispatch(
       chatFocus({
         peopleId:
           props.senderId === profile.id_user
