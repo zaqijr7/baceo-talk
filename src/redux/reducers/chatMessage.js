@@ -11,12 +11,13 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         messageList: action.payload,
+        pageInfoHistoryMsg: action.pageInfo,
       };
-    case 'PAGE_INFO_HISTORY_MESSAGE':
-      return {
-        ...state,
-        pageInfoHistoryMsg: action.payload,
-      };
+    // case 'PAGE_INFO_HISTORY_MESSAGE':
+    //   return {
+    //     ...state,
+    //     pageInfoHistoryMsg: action.payload,
+    //   };
     case 'INTERACTION_HISTORY':
       return {
         ...state,

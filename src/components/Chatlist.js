@@ -17,13 +17,12 @@ function Chatlist(props) {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handlePress = async () => {
-    const response = await http(auth.token).get(
-      `chat/${
-        props.senderId === profile.id_user ? props.receipentId : props.senderId
-      }`,
+    dispatch(
+      historyMsg(
+        auth.token,
+        props.senderId === profile.id_user ? props.receipentId : props.senderId,
+      ),
     );
-    dispatch(historyMsg(response.data.result));
-    dispatch(pageInfoHistoryMessage(response.data.pageInfo));
     dispatch(
       chatFocus({
         peopleId:

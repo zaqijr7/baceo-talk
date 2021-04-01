@@ -39,7 +39,7 @@ const style = StyleSheet.create({
   },
   parentWrap: {
     position: 'relative',
-    marginVertical: 15,
+    marginVertical: 10,
     flexWrap: 'wrap',
   },
   text: {

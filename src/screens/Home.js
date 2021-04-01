@@ -19,8 +19,7 @@ function Home() {
   const auth = useSelector((state) => state.auth);
   const getHistoyInteraction = async () => {
     try {
-      const response = await http(auth.token).get('history');
-      dispatch(historyInteraction(response.data.results));
+      dispatch(historyInteraction(auth.token));
     } catch (err) {
       dispatch(msgResponse(err.response.data.message));
     }

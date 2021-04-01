@@ -1,8 +1,11 @@
-export const historyInteraction = (data) => {
+import http from '../../helper/http';
+
+export const historyInteraction = (token) => {
   return async (dispatch) => {
+    const response = await http(token).get('history');
     dispatch({
       type: 'INTERACTION_HISTORY',
-      payload: data,
+      payload: response.data.results,
     });
   };
 };

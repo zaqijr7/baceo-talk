@@ -11,16 +11,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
 import http from '../helper/http';
 import {updateProfile} from '../redux/action/auth';
+import {Formik, Field} from 'formik';
+import * as Yup from 'yup';
 
 function editEmail() {
-  const [email, setEmail] = useState('');
   const dispatch = useDispatch();
   const [msgRes, setMsgRes] = useState(null);
   const token = useSelector((state) => state.auth.token);
 
-  const handlePress = async () => {
+  const handlePress = async (value) => {
     const data = new URLSearchParams();
-    data.append('email', email);
+    data.append('email', value.email);
     const response = await http(token).patch('profile', data);
     dispatch(updateProfile(response.data.results));
     setMsgRes(response.data.message);
@@ -28,6 +29,11 @@ function editEmail() {
       setMsgRes(null);
     }, 1500);
   };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid Email').required('Email required !'),
+  });
+
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
@@ -35,19 +41,53 @@ function editEmail() {
         <Text style={style.subTitle}>Edit your Email here</Text>
         {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
       </View>
-      <TextInput
-        placeholder="Write Your Email Here"
-        style={style.inputEmail}
-        keyboardType="email-address"
-        onChangeText={(value) => setEmail(value)}
-      />
-      <View style={style.parentButton}>
-        <TouchableOpacity
-          style={style.buttonNext}
-          onPress={() => handlePress()}>
-          <Icon name="save" style={style.arrowIcon} />
-        </TouchableOpacity>
-      </View>
+      <Formik
+        initialValues={{email: ''}}
+        onSubmit={(values) => {
+          handlePress(values);
+          values.email = '';
+        }}
+        validationSchema={validationSchema}>
+        {({
+          handleChange,
+          errors,
+          touched,
+          handleSubmit,
+          handleBlur,
+          isValid,
+          values,
+        }) => (
+          <>
+            <TextInput
+              placeholder="Write Your Email Here"
+              style={style.inputEmail}
+              keyboardType="email-address"
+              value={values.email}
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+            />
+            {errors.email && touched.email ? (
+              <Text style={style.textDanger}>{errors.email}</Text>
+            ) : null}
+            <View style={style.parentButton}>
+              {isValid === false || values.email === '' ? (
+                <TouchableOpacity
+                  style={style.buttonNextDisable}
+                  onPress={handleSubmit}
+                  disabled>
+                  <Icon name="save" style={style.arrowIcon} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.buttonNext}
+                  onPress={handleSubmit}>
+                  <Icon name="save" style={style.arrowIcon} />
+                </TouchableOpacity>
+              )}
+            </View>
+          </>
+        )}
+      </Formik>
     </View>
   );
 }
@@ -58,6 +98,10 @@ const style = StyleSheet.create({
     // alignItems: 'center',
     paddingHorizontal: 25,
     flex: 1,
+  },
+  textDanger: {
+    color: 'red',
+    textAlign: 'center',
   },
   inputEmail: {
     width: '100%',
@@ -105,6 +149,16 @@ const style = StyleSheet.create({
   },
   buttonNext: {
     backgroundColor: '#8D0337',
+    width: 70,
+    height: 70,
+    borderRadius: 100,
+    marginBottom: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 1,
+  },
+  buttonNextDisable: {
+    backgroundColor: 'gray',
     width: 70,
     height: 70,
     borderRadius: 100,

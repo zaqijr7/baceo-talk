@@ -9,13 +9,15 @@ import {
   Pressable,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {historyMsg, pageInfoHistoryMessage} from '../redux/action/msgHistory';
+import {
+  flatListChatHistory,
+  historyMsg,
+  cleanMsg,
+} from '../redux/action/msgHistory';
 import BubbleChat from '../components/BubbleChat';
 import background from '../assets/images/chat.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import http from '../helper/http';
-import io from '../helper/socket';
 import {
   historyInteraction,
   msgResponse,
@@ -31,21 +33,6 @@ const ChatRoom = (props) => {
   const pageInfo = useSelector((state) => state.messageList.pageInfoHistoryMsg);
   const dispatch = useDispatch();
 
-  const getDataChat = async () => {
-    const response = await http(auth.token).get(`chat/${chatFocus.peopleId}`);
-    dispatch(historyMsg(response.data.result));
-    dispatch(pageInfoHistoryMessage(response.data.pageInfo));
-  };
-
-  const getHistoyInteraction = async () => {
-    try {
-      const response = await http(auth.token).get('history');
-      dispatch(historyInteraction(response.data.results));
-    } catch (err) {
-      dispatch(msgResponse(err.response.data.message));
-    }
-  };
-
   const sendChat = async () => {
     try {
       const data = new URLSearchParams();
@@ -54,8 +41,8 @@ const ChatRoom = (props) => {
         `chat?receipentId=${chatFocus.peopleId}`,
         data,
       );
-      await getDataChat();
-      await getHistoyInteraction();
+      dispatch(historyMsg(auth.token, chatFocus.peopleId));
+      dispatch(historyInteraction(auth.token));
       setMessage('');
     } catch (err) {
       console.log(err);
@@ -68,9 +55,8 @@ const ChatRoom = (props) => {
       const oldData = listChat;
       const response = await http(auth.token).get(`${pageInfo.nextLink}`);
       const resultResponse = response.data.result;
-      dispatch(pageInfoHistoryMessage(response.data.pageInfo));
       const newData = [...oldData, ...resultResponse];
-      dispatch(historyMsg(newData));
+      dispatch(flatListChatHistory(newData, response.data.pageInfo));
       setListRefresh(false);
     } catch (err) {
       console.log(err.response.data.message);
@@ -82,9 +68,8 @@ const ChatRoom = (props) => {
     try {
       const response = await http(auth.token).get(`${pageInfo.nextLink}`);
       const resultResponse = response.data.result;
-      dispatch(pageInfoHistoryMessage(response.data.pageInfo));
       const newData = [...oldData, ...resultResponse];
-      dispatch(historyMsg(newData));
+      dispatch(flatListChatHistory(newData, response.data.pageInfo));
     } catch (err) {
       console.log(err.response.data.message);
     }
@@ -93,9 +78,9 @@ const ChatRoom = (props) => {
   console.log(pageInfo, 'ini page info');
 
   useEffect(() => {
-    getDataChat();
+    // getDataChat();
     return () => {
-      dispatch(historyMsg([]));
+      dispatch(cleanMsg());
     };
   }, [listRefresh, chatFocus]);
   return (
@@ -118,7 +103,10 @@ const ChatRoom = (props) => {
             onEndReached={nextData}
             onEndReachedThreshold={1}
             ListFooterComponent={
-              <LoadMore load={listRefresh} nextData={pageInfo.nextLink} />
+              <LoadMore
+                load={listRefresh}
+                nextData={pageInfo === null ? '' : pageInfo.nextLink}
+              />
             }
           />
         </View>
