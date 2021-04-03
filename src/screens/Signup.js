@@ -15,11 +15,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 
 function Signup() {
-  // const [email, setEmail] = useState('');
-  // const [codeCountry, setCodeCountry] = useState('');
-  // const [phoneNum, setPhoneNum] = useState('');
   const [msgRes, setMsgRes] = useState(null);
-  // const phoneNumber = `${codeCountry}${phoneNum}`;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const handlePress = async (value) => {
@@ -52,9 +48,9 @@ function Signup() {
   return (
     <View style={style.parent}>
       <View style={style.rowTitle}>
-        <Text style={style.title}>Create Account First</Text>
+        <Text style={style.title}>Login To Your Account</Text>
         <Text style={style.subTitle}>
-          Make sure the email and phone number is active
+          Make sure the email and phone number is active to get PIN Verification
         </Text>
       </View>
       {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
@@ -108,13 +104,6 @@ function Signup() {
                 {errors.phoneNum || errors.codeCountry}
               </Text>
             ) : null}
-            <TouchableOpacity
-              style={style.textLogin}
-              onPress={() => navigation.navigate('signin')}>
-              <Text>
-                Do you have account? <Text style={style.login}>Login</Text>
-              </Text>
-            </TouchableOpacity>
             <View style={style.parentButton}>
               {isValid === false ||
               values.email === '' ||
@@ -186,6 +175,7 @@ const style = StyleSheet.create({
   subTitle: {
     color: '#707478',
     marginTop: 10,
+    textAlign: 'center',
   },
   parentButton: {
     flex: 1,

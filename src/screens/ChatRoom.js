@@ -25,7 +25,7 @@ import {
 import LoadMore from '../components/LoadMore';
 
 const ChatRoom = (props) => {
-  const [message, setMessage] = useState([]);
+  const [message, setMessage] = useState('');
   const auth = useSelector((state) => state.auth);
   const chatFocus = useSelector((state) => state.friend.chatFocus);
   const listChat = useSelector((state) => state.messageList.messageList);
@@ -119,11 +119,20 @@ const ChatRoom = (props) => {
             value={message}
             onChangeText={(value) => setMessage(value)}
           />
-          <Pressable
-            android_ripple={{radius: 30, borderless: true, color: 'black'}}
-            onPress={() => sendChat()}>
-            <Icon name="paper-plane" style={style.iconPlane} />
-          </Pressable>
+          {message === '' ? (
+            <Pressable
+              android_ripple={{radius: 30, borderless: true, color: 'black'}}
+              onPress={() => sendChat()}
+              disabled>
+              <Icon name="paper-plane" style={style.iconPlane} />
+            </Pressable>
+          ) : (
+            <Pressable
+              android_ripple={{radius: 30, borderless: true, color: 'black'}}
+              onPress={() => sendChat()}>
+              <Icon name="paper-plane" style={style.iconPlane} />
+            </Pressable>
+          )}
         </View>
       </ImageBackground>
     </View>

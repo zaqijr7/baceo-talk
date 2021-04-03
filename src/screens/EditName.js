@@ -35,7 +35,7 @@ function editName() {
     const check = values.match(/[!@#$%^&*(),.?~`_'"-=:{}|<>]/);
     console.log(check !== null);
     if (check !== null) {
-      setErr('karakter tidak boleh ada yang special');
+      setErr('Cannot be any special characters');
       setName('');
     } else {
       setName(values);

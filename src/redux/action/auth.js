@@ -12,6 +12,14 @@ export const saveDataRegis = (email, phoneNum) => {
     });
   };
 };
+export const temporaryToken = (token) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'TEMPORAY_TOKEN',
+      payload: token,
+    });
+  };
+};
 
 export const login = (token) => {
   return async (dispatch) => {

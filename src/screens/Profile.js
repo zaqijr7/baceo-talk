@@ -206,13 +206,13 @@ function Profile() {
             </Text>
           </TouchableOpacity>
           <View style={style.line} />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={style.rowInfoPhoneNumber}
             onPress={() => navigation.navigate('editPin')}>
             <Text style={style.textPhoneNumber}>PIN</Text>
             <Text style={style.textMobile}>Edit your PIN</Text>
           </TouchableOpacity>
-          <View style={style.line} />
+          <View style={style.line} /> */}
           <TouchableOpacity style={style.rowInfoPhoneNumber}>
             <Text style={style.textPhoneNumber}>Bio</Text>
             <Text style={style.textMobile}>Add a few words about yourself</Text>

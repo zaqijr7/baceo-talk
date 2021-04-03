@@ -3,14 +3,17 @@ import {StyleSheet, Text, Image, View, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import PIN from '../assets/images/pin.png';
 import http from '../helper/http';
-import {login} from '../redux/action/auth';
+import {temporaryToken} from '../redux/action/auth';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {useNavigation} from '@react-navigation/core';
 
 function Pin() {
   const [password, setPassword] = useState('');
   const [msgRes, setMsgRes] = useState(null);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handlePress = async () => {
     const data = new URLSearchParams();
@@ -21,7 +24,8 @@ function Pin() {
     try {
       setMsgRes(null);
       const response = await http().patch('auth', data);
-      dispatch(login(response.data.results.token));
+      dispatch(temporaryToken(response.data.results.token));
+      navigation.navigate('UpdateProfile');
     } catch (err) {
       setMsgRes(err.response.data.message);
     }
@@ -32,10 +36,9 @@ function Pin() {
         <Image source={PIN} style={style.iconUnlock} />
         <Text style={style.textEnterPin}>Enter PIN</Text>
         <Text style={style.text}>
-          We've sent an email with pin verification to your email :
-          {auth.emailRegis}
+          {`We've sent an email with pin verification to your email : ${auth.emailRegis}`}
         </Text>
-        {msgRes !== null && <Text style={style.title}>{msgRes}</Text>}
+        {msgRes !== null && <Text style={style.titleResponse}>{msgRes}</Text>}
       </View>
       <View style={style.rowInput}>
         <SmoothPinCodeInput
@@ -53,7 +56,8 @@ function Pin() {
         <TouchableOpacity
           style={style.buttonSubmit}
           onPress={() => handlePress()}>
-          <Text style={style.textSubmit}>Submit</Text>
+          <Icon name="sign-in" style={style.arrowIcon} />
+          <Text style={style.textSubmit}>Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -68,6 +72,11 @@ const style = StyleSheet.create({
   iconUnlock: {
     width: 153.5,
     height: 95.5,
+  },
+  arrowIcon: {
+    fontSize: 18,
+    color: 'white',
+    marginRight: 15,
   },
   row: {
     alignItems: 'center',
@@ -108,6 +117,7 @@ const style = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   textSubmit: {
     fontSize: 18,
@@ -119,6 +129,13 @@ const style = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#8D0337',
+  },
+  titleResponse: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: 'red',
   },
 });
 

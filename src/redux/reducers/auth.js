@@ -1,8 +1,10 @@
 const intialState = {
   token: null,
+  temporaryToken: null,
   profile: [],
   emailRegis: '',
   phoneNumRegis: '',
+  pinRegis: '',
   authMessage: '',
 };
 
@@ -37,6 +39,11 @@ const authReducer = (state = intialState, action) => {
       return {
         ...state,
         phoneNumRegis: action.payload,
+      };
+    case 'TEMPORAY_TOKEN':
+      return {
+        ...state,
+        temporaryToken: action.payload,
       };
     default:
       return state;
