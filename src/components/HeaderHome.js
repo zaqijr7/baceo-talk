@@ -12,7 +12,7 @@ const HeaderHome = () => {
         <Icon name="bars" style={style.iconBar} />
       </TouchableOpacity>
       <Text style={style.title}>Baceo Talk</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Contact')}>
         <Icon name="search" style={style.iconSearch} />
       </TouchableOpacity>
     </View>

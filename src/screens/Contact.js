@@ -55,7 +55,7 @@ function Contact() {
           <Icon name="search" style={style.iconSearch} />
           <TextInput
             style={style.formInput}
-            placeholder="Search Title..."
+            placeholder="Search Contact..."
             onChangeText={(value) => setInputSearch(value)}
           />
         </View>
@@ -127,7 +127,7 @@ const style = StyleSheet.create({
     zIndex: 2,
   },
   parentWrapper: {
-    backgroundColor: '#BA275E',
+    backgroundColor: '#8D0337',
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
