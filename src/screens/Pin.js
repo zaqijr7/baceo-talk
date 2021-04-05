@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, Image, View, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import PIN from '../assets/images/pin.png';
 import http from '../helper/http';
@@ -12,12 +19,14 @@ import PushNotification from 'react-native-push-notification';
 function Pin() {
   const [password, setPassword] = useState('');
   const [msgRes, setMsgRes] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const tokenNotif = useSelector((state) => state.auth.tokenNotif);
 
   const handlePress = async () => {
+    setIsLoading(true);
     const data = new URLSearchParams();
     data.append('email', auth.emailRegis);
     data.append('phoneNumber', auth.emailRegis);
@@ -32,6 +41,7 @@ function Pin() {
         title: 'Activity',
         message: 'Login Success',
       });
+      setIsLoading(false);
       navigation.navigate('UpdateProfile');
     } catch (err) {
       PushNotification.localNotification({
@@ -39,6 +49,7 @@ function Pin() {
         message: 'Login Failed',
       });
       setMsgRes(err.response.data.message);
+      setIsLoading(false);
     }
   };
   return (
@@ -64,12 +75,16 @@ function Pin() {
         />
       </View>
       <View>
-        <TouchableOpacity
-          style={style.buttonSubmit}
-          onPress={() => handlePress()}>
-          <Icon name="sign-in" style={style.arrowIcon} />
-          <Text style={style.textSubmit}>Login</Text>
-        </TouchableOpacity>
+        {isLoading === true ? (
+          <ActivityIndicator size="large" color="black" style={style.loading} />
+        ) : (
+          <TouchableOpacity
+            style={style.buttonSubmit}
+            onPress={() => handlePress()}>
+            <Icon name="sign-in" style={style.arrowIcon} />
+            <Text style={style.textSubmit}>Login</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -83,6 +98,9 @@ const style = StyleSheet.create({
   iconUnlock: {
     width: 153.5,
     height: 95.5,
+  },
+  loading: {
+    marginTop: 40,
   },
   arrowIcon: {
     fontSize: 18,

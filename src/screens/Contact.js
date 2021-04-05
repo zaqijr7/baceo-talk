@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
+  Text,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import ListContact from '../components/ListContact';
@@ -19,19 +21,31 @@ const separator = () => {
 function Contact() {
   const [contact, setContact] = useState([]);
   const [msgRes, setMsgRes] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [sort, setSort] = useState('ASC');
   const [up, setUp] = useState(false);
   const [inputSearch, setInputSearch] = useState('');
   const profile = useSelector((state) => state.auth.profile);
 
   const getContact = async () => {
+    setIsLoading(true);
+    setMsgRes(null);
     try {
       const response = await http().get(
         `allUser?search=${inputSearch}&sort=name&order=${sort}&id_user=${profile.id_user}`,
       );
-      setContact(response.data.results);
+      const result = response.data.results;
+      console.log(result.length, 'ini banyak kontak');
+      if (result.length === 0) {
+        setIsLoading(false);
+        setMsgRes('Contact not found');
+      } else {
+        setContact(response.data.results);
+        setIsLoading(false);
+      }
     } catch (err) {
-      setMsgRes(err.response.data.message);
+      setIsLoading(false);
+      setMsgRes('Contact not found');
     }
   };
 
@@ -76,22 +90,36 @@ function Contact() {
         </View>
       </View>
       <View style={style.parentWrapperList}>
-        <FlatList
-          data={contact}
-          keyExtractor={(item, index) => String(item.id_user)}
-          renderItem={({item}) => {
-            return (
-              <ListContact
-                id={item.id_user}
-                email={item.email}
-                name={item.name}
-                phoneNumber={item.phoneNumber}
-                photo={item.photo}
+        {msgRes !== null ? (
+          <View style={style.wrapperLoading}>
+            <Text style={style.textNotFound}>{msgRes}</Text>
+          </View>
+        ) : (
+          <>
+            {isLoading === true ? (
+              <View style={style.wrapperLoading}>
+                <ActivityIndicator size="large" color="black" />
+              </View>
+            ) : (
+              <FlatList
+                data={contact}
+                keyExtractor={(item, index) => String(item.id_user)}
+                renderItem={({item}) => {
+                  return (
+                    <ListContact
+                      id={item.id_user}
+                      email={item.email}
+                      name={item.name}
+                      phoneNumber={item.phoneNumber}
+                      photo={item.photo}
+                    />
+                  );
+                }}
+                ItemSeparatorComponent={separator}
               />
-            );
-          }}
-          ItemSeparatorComponent={separator}
-        />
+            )}
+          </>
+        )}
       </View>
     </>
   );
@@ -190,6 +218,16 @@ const style = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  wrapperLoading: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textNotFound: {
+    fontSize: 16,
+    color: '#CCCCCC',
   },
 });
 

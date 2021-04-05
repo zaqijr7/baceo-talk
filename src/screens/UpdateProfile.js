@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import http from '../helper/http';
@@ -19,18 +20,21 @@ const UpdateProfile = () => {
   const [msgRes, setMsgRes] = useState(null);
   const [image, setImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState(null);
   const [name, setName] = useState('');
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handlePress = async () => {
+    setIsLoading(true);
     try {
       if (image === null) {
         const form = new URLSearchParams();
         form.append('name', name);
         form.append('photo', 'null');
         await http(auth.temporaryToken).patch('profile', form);
+        setIsLoading(false);
         dispatch(login(auth.temporaryToken));
       } else {
         const fileUpload = {
@@ -44,9 +48,11 @@ const UpdateProfile = () => {
         const form = new URLSearchParams();
         form.append('name', name);
         await http(auth.temporaryToken).patch('profile', form);
+        setIsLoading(false);
         dispatch(login(auth.temporaryToken));
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -149,16 +155,24 @@ const UpdateProfile = () => {
         keyboardType="email-address"
         onChangeText={(value) => handleChange(value)}
       />
-      {err && <Text style={styles.textDanger}>{err}</Text>}
-      <Text>Enter your fullname</Text>
-      {err !== null || name === '' ? (
-        <TouchableOpacity style={styles.btnNextDisable} disabled>
-          <Text style={styles.textBtn}>Next</Text>
-        </TouchableOpacity>
+      {isLoading === true ? (
+        <ActivityIndicator size="large" color="black" style={styles.loading} />
       ) : (
-        <TouchableOpacity style={styles.btnNext} onPress={() => handlePress()}>
-          <Text style={styles.textBtn}>Next</Text>
-        </TouchableOpacity>
+        <>
+          {err && <Text style={styles.textDanger}>{err}</Text>}
+          <Text>Enter your fullname</Text>
+          {err !== null || name === '' ? (
+            <TouchableOpacity style={styles.btnNextDisable} disabled>
+              <Text style={styles.textBtn}>Next</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.btnNext}
+              onPress={() => handlePress()}>
+              <Text style={styles.textBtn}>Next</Text>
+            </TouchableOpacity>
+          )}
+        </>
       )}
     </View>
   );
@@ -281,6 +295,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#8D0337',
     marginTop: 80,
     marginBottom: 10,
+  },
+  loading: {
+    marginTop: 40,
   },
   btnNext: {
     width: 150,
