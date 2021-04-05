@@ -3,7 +3,6 @@ import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Chatlist from '../components/Chatlist';
-import http from '../helper/http';
 import {
   historyInteraction,
   msgResponse,

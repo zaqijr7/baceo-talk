@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import avatar from '../assets/images/avatar.jpg';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {chatFocus} from '../redux/action/chatFocus';
@@ -87,12 +87,14 @@ function Chatlist(props) {
                 : props.senderName}
             </Text>
           )}
-          <Text>{props.message}</Text>
+          <View style={style.rowTime}>
+            {props.senderId === profile.id_user && (
+              <Icon name="check" style={style.cheklistIcon} />
+            )}
+            <Text>{props.message}</Text>
+          </View>
         </View>
         <View style={style.rowTime}>
-          {props.senderId === profile.id_user && (
-            <Icon name="check" style={style.cheklistIcon} />
-          )}
           <Text style={style.timeText}>
             {moment(props.createdAt).format('LT')}
           </Text>
@@ -133,6 +135,7 @@ const style = StyleSheet.create({
   cheklistIcon: {
     color: '#BA275E',
     fontSize: 15,
+    marginRight: 5,
   },
   contactName: {
     fontSize: 15,

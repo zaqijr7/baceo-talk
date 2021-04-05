@@ -1,6 +1,7 @@
 const intialState = {
   token: null,
   temporaryToken: null,
+  tokenNotif: null,
   profile: [],
   emailRegis: '',
   phoneNumRegis: '',
@@ -44,6 +45,11 @@ const authReducer = (state = intialState, action) => {
       return {
         ...state,
         temporaryToken: action.payload,
+      };
+    case 'SET_TOKEN_NOTIF':
+      return {
+        ...state,
+        tokenNotif: action.tokenNotif,
       };
     default:
       return state;

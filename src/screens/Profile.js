@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {REACT_APP_API_URL as API_URL} from '@env';
 import HeaderSelfProfile from '../components/HeaderSelfProfile';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/core';
 import TextTicker from 'react-native-text-ticker';
 import avatar from '../assets/images/avatar.jpg';
@@ -125,7 +125,7 @@ function Profile() {
                   <TouchableOpacity
                     style={style.btnDelete}
                     onPress={() => deletePhoto()}>
-                    <Icon name="trash" style={style.iconTrash} />
+                    <Icon name="trash-2" style={style.iconTrash} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={style.btnClose}

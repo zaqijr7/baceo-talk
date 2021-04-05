@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import avatar from '../assets/images/avatar.jpg';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/core';
 import {REACT_APP_API_URL as API_URL} from '@env';
 import TextTicker from 'react-native-text-ticker';
@@ -59,7 +59,7 @@ const ProfilePeople = () => {
           style={style.btnChat}
           android_ripple={{color: 'black', radius: 37.5}}
           onPress={() => navigation.goBack()}>
-          <Icon name="comments" style={style.iconChat} />
+          <Icon name="message1" style={style.iconChat} />
         </Pressable>
         <View style={style.rowInfoPhoneNumber}>
           <Text style={style.textInfo}>Info</Text>

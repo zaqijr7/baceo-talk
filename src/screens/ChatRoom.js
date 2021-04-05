@@ -87,28 +87,30 @@ const ChatRoom = (props) => {
     <View style={style.parentWrap}>
       <ImageBackground source={background} style={style.image}>
         <View style={style.wrapperMessageList}>
-          <FlatList
-            inverted={true}
-            data={listChat}
-            keyExtractor={(item, index) => String(index)}
-            renderItem={({item}) => (
-              <BubbleChat
-                message={item.message}
-                idUser={item.senderId}
-                idChat={item.id_chat}
-              />
-            )}
-            refreshing={listRefresh}
-            onRefresh={fetchNewData}
-            onEndReached={nextData}
-            onEndReachedThreshold={1}
-            ListFooterComponent={
-              <LoadMore
-                load={listRefresh}
-                nextData={pageInfo === null ? '' : pageInfo.nextLink}
-              />
-            }
-          />
+          {listChat.length !== 0 && (
+            <FlatList
+              inverted={true}
+              data={listChat}
+              keyExtractor={(item, index) => String(index)}
+              renderItem={({item}) => (
+                <BubbleChat
+                  message={item.message}
+                  idUser={item.senderId}
+                  idChat={item.id_chat}
+                />
+              )}
+              refreshing={listRefresh}
+              onRefresh={fetchNewData}
+              onEndReached={nextData}
+              onEndReachedThreshold={1}
+              ListFooterComponent={
+                <LoadMore
+                  load={listRefresh}
+                  nextData={pageInfo === null ? '' : pageInfo.nextLink}
+                />
+              }
+            />
+          )}
         </View>
         <View style={style.parentWrapInputMessage}>
           <Icon name="smile" style={style.iconSmile} />

@@ -7,15 +7,19 @@ import {
 } from '../redux/action/interactionHistory';
 import {historyMsg, pageInfoHistoryMessage} from '../redux/action/msgHistory';
 import {connect} from 'react-redux';
+import PushNotification from 'react-native-push-notification';
+import {setTokenNotif} from '../redux/action/notification';
 
 class SocketRoot extends Component {
   componentDidMount() {
+    PushNotification.configure({
+      onRegister: (token) => {
+        this.props.setTokenNotif(token.token);
+      },
+    });
+
     io.onAny((params) => {
       const {id_user} = this.props.auth.profile;
-      console.log(
-        `SEND_CHAT_TO_${id_user}` === params,
-        '<<<<<<<<<<<<<apa benar',
-      );
       const {token} = this.props.auth;
       if (`SEND_CHAT_TO_${id_user}` === params) {
         io.once(`SEND_CHAT_TO_${id_user}`, (msg) => {
@@ -36,6 +40,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
+  setTokenNotif,
   historyMsg,
   pageInfoHistoryMessage,
   historyInteraction,

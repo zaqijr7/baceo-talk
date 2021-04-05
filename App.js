@@ -17,11 +17,11 @@ function App() {
     <>
       <PersistGate persistor={persistore}>
         <Provider store={store}>
-          <NavigationContainer>
-            <SocketRoot>
+          <SocketRoot>
+            <NavigationContainer>
               <DrawerNav />
-            </SocketRoot>
-          </NavigationContainer>
+            </NavigationContainer>
+          </SocketRoot>
         </Provider>
       </PersistGate>
     </>

@@ -7,6 +7,7 @@ import {temporaryToken} from '../redux/action/auth';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/core';
+import PushNotification from 'react-native-push-notification';
 
 function Pin() {
   const [password, setPassword] = useState('');
@@ -14,19 +15,29 @@ function Pin() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const tokenNotif = useSelector((state) => state.auth.tokenNotif);
 
   const handlePress = async () => {
     const data = new URLSearchParams();
     data.append('email', auth.emailRegis);
     data.append('phoneNumber', auth.emailRegis);
     data.append('pin', password);
+    data.append('tokenNotif', tokenNotif);
     console.log(data);
     try {
       setMsgRes(null);
       const response = await http().patch('auth', data);
       dispatch(temporaryToken(response.data.results.token));
+      PushNotification.localNotification({
+        title: 'Activity',
+        message: 'Login Success',
+      });
       navigation.navigate('UpdateProfile');
     } catch (err) {
+      PushNotification.localNotification({
+        title: 'Activity',
+        message: 'Login Failed',
+      });
       setMsgRes(err.response.data.message);
     }
   };

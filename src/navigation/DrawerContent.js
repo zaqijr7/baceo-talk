@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/AntDesign';
 import avatar from '../assets/images/avatar.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../redux/action/auth';
@@ -13,7 +13,7 @@ const DrawerContent = (props) => {
   const profile = useSelector((state) => state.auth.profile);
   const dispatch = useDispatch();
   const handlePress = () => {
-    dispatch(logout());
+    dispatch(logout(profile.id_user));
     props.navigation.dispatch(DrawerActions.closeDrawer());
   };
   return (
@@ -64,14 +64,14 @@ const DrawerContent = (props) => {
         />
         <DrawerItem
           icon={({color, size}) => (
-            <Icon name="user-alt" size={size} color={color} />
+            <Icon name="user" size={size} color={color} />
           )}
           label="Profile"
           onPress={() => props.navigation.navigate('selfProfile')}
         />
         <DrawerItem
           icon={({color, size}) => (
-            <Icon name="address-book" size={size} color={color} />
+            <Icon name="message1" size={size} color={color} />
           )}
           label="Contact"
           onPress={() => props.navigation.navigate('Contact')}
@@ -80,7 +80,7 @@ const DrawerContent = (props) => {
       <View style={style.rowSignOut}>
         <DrawerItem
           icon={({color, size}) => (
-            <Icon name="sign-out-alt" size={size} color={color} />
+            <Icon name="poweroff" size={size} color={color} />
           )}
           label="Log Out"
           onPress={() => handlePress()}

@@ -79,27 +79,6 @@ const UpdateProfile = () => {
     });
   };
 
-  //   const uploadPhoto = async () => {
-  //     const fileUpload = {
-  //       uri: image.uri,
-  //       type: 'image/jpeg',
-  //       name: image.fileName,
-  //     };
-  //     const file = new FormData();
-  //     file.append('photo', fileUpload);
-  //     const response = await http(token).patch('update/photo', file);
-  //     dispatch(updatePhoto(token, profile.id));
-  //     setImage(null);
-  //     setMsgRes(response.data.message);
-  //     setTimeout(() => {
-  //       setMsgRes(null);
-  //     }, 8000);
-  //   };
-
-  const deletePhoto = async () => {
-    setImage(null);
-  };
-
   const handleChange = (values) => {
     const check = values.match(/[!@#$%^&*(),.?~`_'"-=:{}|<>]/);
     console.log(check !== null);
@@ -171,7 +150,7 @@ const UpdateProfile = () => {
         onChangeText={(value) => handleChange(value)}
       />
       {err && <Text style={styles.textDanger}>{err}</Text>}
-      <Text>Masukan nama lengkapmu</Text>
+      <Text>Enter your fullname</Text>
       {err !== null || name === '' ? (
         <TouchableOpacity style={styles.btnNextDisable} disabled>
           <Text style={styles.textBtn}>Next</Text>

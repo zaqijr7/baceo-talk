@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "12625320831",
+    "project_id": "baceo-talk",
+    "storage_bucket": "baceo-talk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12625320831:android:35e68f4f35b1f0a7f7184a",
+        "android_client_info": {
+          "package_name": "com.baceotalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12625320831-8qvainog6tcl4sbnk16oeqorp415pj62.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANXYNoI0PdqMnANCX42KaywEdhQJDqp9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12625320831-8qvainog6tcl4sbnk16oeqorp415pj62.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

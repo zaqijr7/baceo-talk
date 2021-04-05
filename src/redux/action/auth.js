@@ -52,8 +52,9 @@ export const updateProfile = (data) => {
   };
 };
 
-export const logout = () => {
+export const logout = (id) => {
   return async (dispatch) => {
+    await http().delete(`auth?id=${id}`);
     dispatch({
       type: 'LOGIN',
       token: null,
