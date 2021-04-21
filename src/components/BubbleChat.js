@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const BubbleChat = (props) => {
   const profile = useSelector((state) => state.auth.profile);
@@ -9,6 +10,9 @@ const BubbleChat = (props) => {
     <>
       {profile.id_user === props.idUser ? (
         <TouchableOpacity>
+          <Text style={style.timeSelf}>
+            {moment(props.time).format('ll LT')}
+          </Text>
           <View style={style.parentRootSelf}>
             <View style={style.parentWrap}>
               <Text style={style.textSelf}>{props.message}</Text>
@@ -17,6 +21,7 @@ const BubbleChat = (props) => {
         </TouchableOpacity>
       ) : (
         <TouchableOpacity>
+          <Text style={style.time}>{moment(props.time).format('ll LT')}</Text>
           <View style={style.parentRoot}>
             <View style={style.parentWrap}>
               <Text style={style.text}>{props.message}</Text>
@@ -40,7 +45,7 @@ const style = StyleSheet.create({
   parentWrap: {
     position: 'relative',
     marginVertical: 10,
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
   },
   text: {
     paddingHorizontal: 10,
@@ -48,6 +53,7 @@ const style = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 9,
     fontSize: 15,
+    flexShrink: 1,
   },
   textSelf: {
     paddingHorizontal: 10,
@@ -56,6 +62,20 @@ const style = StyleSheet.create({
     color: 'white',
     borderRadius: 9,
     fontSize: 15,
+  },
+  timeSelf: {
+    textAlign: 'right',
+    fontSize: 13,
+    marginTop: 10,
+    paddingRight: 8,
+    color: '#5F6368',
+  },
+  time: {
+    fontSize: 13,
+    paddingRight: 8,
+    marginTop: 14,
+    paddingLeft: 8,
+    color: '#5F6368',
   },
 });
 

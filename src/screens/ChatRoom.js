@@ -97,6 +97,7 @@ const ChatRoom = (props) => {
                   message={item.message}
                   idUser={item.senderId}
                   idChat={item.id_chat}
+                  time={item.createdAt}
                 />
               )}
               refreshing={listRefresh}

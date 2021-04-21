@@ -97,7 +97,7 @@ const style = StyleSheet.create({
     paddingBottom: 20,
   },
   background: {
-    backgroundColor: '#BA275E',
+    backgroundColor: '#8D0337',
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
     height: 150,
